@@ -15,14 +15,14 @@ const Header = () => {
 
   return (
     <nav className="w-full flex justify-between md:justify-center items-center p-4">
-      <div className="md:flex-[0.5] flex-initial items-center justify-center">
+      <div className="md:flex-[0.5] flex-initial items-center justify-center mt-3">
         <img src={logo} alt="Logo" className="w-48 cursor-pointer" />
       </div>
       <ul className="text-white md:flex  hidden list-none flex-row justify-between items-center flex-initial">
         {navList.map((item, index) => (
           <NavItem key={index} title={item} />
         ))}
-        <li className="bg-[#2952e3] py-2 px-7 mx-4 cursor-pointer hover:bg-[#2546bd] rounded-full">
+        <li className="bg-[#6621dcf4] py-2 px-7 mx-4 cursor-pointer hover:bg-[#6721dcbf] rounded-full">
           login
         </li>
       </ul>
