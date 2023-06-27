@@ -2,11 +2,13 @@
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
 import { Loader } from "./Loader.jsx";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { TransactionContext } from "../context/TransactionContext.jsx";
 
 const Input = ({ placeholder, name, type, value, inputHandler }) => {
   return (
     <input
+      required
       type={type}
       step="0.0001"
       value={value}
@@ -21,9 +23,26 @@ const genericStyles =
   "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
 
 const Welcome = () => {
-  const walletConnection = () => {};
-  const submitHandler = () => {};
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const {
+    makeTransaction,
+    connectWallet,
+    formData,
+    handleChange,
+    currentAccount,
+  } = useContext(TransactionContext);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    const { receiver, amount, keyword, message } = formData;
+
+    if (!receiver || !amount || !message || !keyword) {
+      console.log("Provide all information");
+      return;
+    }
+
+    makeTransaction();
+  };
 
   return (
     <div className="w-full flex items-center justify-center">
@@ -37,13 +56,18 @@ const Welcome = () => {
             Your homely portal to Buy and sell <br /> crypto across the world in
             just a single click.
           </p>
-          <button
-            type="button"
-            onClick={walletConnection}
-            className="flex flex-row justify-center items-center my-5 bg-[#6621dcf4] p-3 rounded-full hover:bg-[#6721dcbf] cursor-pointer"
-          >
-            <p className="text-base text-white font-semibold">Connect Wallet</p>
-          </button>
+
+          {!currentAccount && (
+            <button
+              type="button"
+              onClick={connectWallet}
+              className="flex flex-row justify-center items-center my-5 bg-[#6621dcf4] p-3 rounded-full hover:bg-[#6721dcbf] cursor-pointer"
+            >
+              <p className="text-base text-white font-semibold">
+                Connect Wallet
+              </p>
+            </button>
+          )}
 
           <div className="grid grid-cols-2 w-full mt-10 sm:grid-cols-3">
             <div className={`${genericStyles} rounded-tl-2xl`}>Reliability</div>
@@ -69,9 +93,13 @@ const Welcome = () => {
                 <BsInfoCircle fontSize={18} color="#fff"></BsInfoCircle>
               </div>
               <div>
-                <p className="text-white font-light text-sm">
-                  0xsd3a21as5d4a3s5d351asd1a
-                </p>
+                {!currentAccount ? (
+                  <p className="text-white font-light text-sm">0x000....000</p>
+                ) : (
+                  <p className="text-white font-light text-sm">
+                    {currentAccount.substr(0, 30)}...
+                  </p>
+                )}
                 <p className="text-white font-semibold text-lg mt-1">
                   Ethereum
                 </p>
@@ -84,25 +112,25 @@ const Welcome = () => {
               placeholder="Receiver address"
               name="receiver"
               type="text"
-              inputHandler={() => {}}
+              inputHandler={handleChange}
             />
             <Input
               placeholder="Amount (ETH)"
               name="amount"
               type="number"
-              inputHandler={() => {}}
+              inputHandler={handleChange}
             />
             <Input
               placeholder="Keyword (Gif)"
               name="keyword"
               type="text"
-              inputHandler={() => {}}
+              inputHandler={handleChange}
             />
             <Input
               placeholder="Enter Message"
               name="message"
               type="text"
-              inputHandler={() => {}}
+              inputHandler={handleChange}
             />
 
             <div className="h-[1px] my-2  w-full bg-gray-400"></div>
