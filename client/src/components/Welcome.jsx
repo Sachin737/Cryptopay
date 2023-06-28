@@ -47,12 +47,12 @@ const Welcome = () => {
   return (
     <div className="w-full flex items-center justify-center">
       <div className="flex flex-col items-start justify-between px-4 py-12 mf:flex-row mf:p-20">
-        <div className="flex flex-1 justify-start flex-col md:mr-10 md:mx-5">
+        <div className="flex flex-1 justify-start flex-col mf:mr-10 mf:mx-5">
           <h1 className="text-white text-gradient py-1 text-3xl sm:text-5xl">
             Send Crypto <br />
             Fast, Easy, and Secure
           </h1>
-          <p className="text-white font-light text-left mt-5 md:w-9/12 w-11/12 text-base">
+          <p className="text-white font-light text-left mt-5 mf:w-9/12 w-11/12 text-base">
             Your homely portal to Buy and sell <br /> crypto across the world in
             just a single click.
           </p>
@@ -83,7 +83,7 @@ const Welcome = () => {
           </div>
         </div>
 
-        <div className="flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10  md:mx-5">
+        <div className="flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10  mf:mx-5">
           <div className="flex-col justify-end items-start rounded-xl h-40 w-full sm:w-72 my-5 eth-card white-glassmorphism p-3">
             <div className="flex flex-col justify-between w-full h-full">
               <div className="flex justify-between items-center">

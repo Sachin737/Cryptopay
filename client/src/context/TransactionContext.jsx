@@ -6,20 +6,24 @@ const { ethereum } = window;
 
 export const TransactionContext = React.createContext();
 
-const getEthereumContract = () => {
+const getEthereumContract = async () => {
   const provider = new ethers.BrowserProvider(ethereum);
-  const signer = provider.getSigner();
+  const signer = await provider.getSigner();
+
   const transactionContract = new ethers.Contract(
     myContractAddress,
     myContractABI,
     signer
   );
 
-  //   console.log(provider, signer, transactionContract);
   return transactionContract;
 };
 
 export const TransactionProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
+  const [transactionCount, setTransactionCount] = useState(
+    localStorage.getItem("transactionCount")
+  );
   const [currentAccount, setCurrentAccount] = useState("");
   const [formData, setFormData] = useState({
     receiver: "",
@@ -43,8 +47,6 @@ export const TransactionProvider = ({ children }) => {
     if (accounts.length) {
       setCurrentAccount(accounts[0]);
     }
-
-    console.log(accounts);
   };
 
   //   Connect account
@@ -73,7 +75,9 @@ export const TransactionProvider = ({ children }) => {
       }
 
       const { receiver, amount, keyword, message } = formData;
-      const transactionContract = getEthereumContract();
+      const transactionContract = await getEthereumContract();
+
+      const parsedAmount = ethers.parseEther(amount).toString();
 
       await ethereum.request({
         method: "eth_sendTransaction",
@@ -82,13 +86,32 @@ export const TransactionProvider = ({ children }) => {
             from: currentAccount,
             to: receiver,
             gas: "0x5208", // 21000
-            value: ethers.parseEther(amount)._hex,
+            value: parsedAmount,
           },
         ],
       });
+
+      const transactionHash = await transactionContract.addToBlock(
+        receiver,
+        parsedAmount,
+        message,
+        keyword
+      );
+
+      setLoading(true);
+      console.log(`Loading - ${transactionHash.hash}`);
+      await transactionHash.wait();
+      console.log(`Success - ${transactionHash.hash}`);
+      setLoading(false);
+
+      const transactionsCount =
+        await transactionContract.getTransactionsCount();
+
+      setTransactionCount(transactionsCount);
+      window.location.reload();
     } catch (err) {
       console.log(err);
-      throw new Error("No ethereum objects!");
+      alert("Transaction rejected by metamask!");
     }
   };
 

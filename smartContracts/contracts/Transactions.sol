@@ -17,7 +17,7 @@ contract Transactions {
     struct TransferData {
         address sender;
         address receiver;
-        uint amount;
+        uint256 amount;
         string message;
         uint256 timestamp;
         string keyword;
@@ -51,6 +51,7 @@ contract Transactions {
             block.timestamp,
             keyword
         );
+        return;
     }
 
     function getAllTransactions() public view returns (TransferData[] memory) {
