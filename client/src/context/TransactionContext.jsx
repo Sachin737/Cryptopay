@@ -60,8 +60,8 @@ export const TransactionProvider = ({ children }) => {
 
       const TransactionsBody = Fetchedtransactions.map((el) => {
         return {
-          addressTo: el.receiver,
           addressFrom: el.sender,
+          addressTo: el.receiver,
           timestamp: new Date(
             bigInt(Number(el.timestamp)) * 1000
           ).toLocaleString(),
@@ -84,8 +84,9 @@ export const TransactionProvider = ({ children }) => {
 
     const accounts = await ethereum.request({ method: "eth_accounts" });
 
-    if (accounts.length) {
-      setCurrentAccount(accounts[0]);
+    if (accounts.length != 0) {
+      setCurrentAccount(accounts[accounts.length - 1]);
+      checkIfTransactionsExist();
       fetchAllTransactions();
     }
   };
@@ -101,7 +102,7 @@ export const TransactionProvider = ({ children }) => {
         method: "eth_requestAccounts",
       });
 
-      setCurrentAccount(accounts[0]);
+      setCurrentAccount(accounts[accounts.length - 1]);
     } catch (err) {
       console.log(err);
       throw new Error("No ethereum objects!");
@@ -119,6 +120,11 @@ export const TransactionProvider = ({ children }) => {
       const transactionContract = await getEthereumContract();
 
       const parsedAmount = ethers.parseEther(amount).toString();
+
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      console.log(accounts, currentAccount);
 
       await ethereum.request({
         method: "eth_sendTransaction",
@@ -158,7 +164,6 @@ export const TransactionProvider = ({ children }) => {
 
   useEffect(() => {
     ifWalletConnected();
-    checkIfTransactionsExist();
   }, []);
 
   return (

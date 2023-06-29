@@ -9,8 +9,8 @@ const shortenAddress = (addr) => {
 };
 
 const TransactionCard = ({
-  addressTo,
   addressFrom,
+  addressTo,
   message,
   keyword,
   timestamp,
@@ -18,6 +18,7 @@ const TransactionCard = ({
   url,
 }) => {
   const gifUrl = useFetch({ keyword });
+  const { currentAccount } = useContext(TransactionContext);
 
   return (
     <div
