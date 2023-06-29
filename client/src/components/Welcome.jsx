@@ -23,13 +23,13 @@ const genericStyles =
   "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
 
 const Welcome = () => {
-  const [loading, setLoading] = useState(false);
   const {
     makeTransaction,
     connectWallet,
     formData,
     handleChange,
     currentAccount,
+    loading,
   } = useContext(TransactionContext);
 
   const submitHandler = (e) => {
@@ -46,7 +46,7 @@ const Welcome = () => {
 
   return (
     <div className="w-full flex items-center justify-center">
-      <div className="flex flex-col items-start justify-between px-4 py-12 mf:flex-row mf:p-20">
+      <div className="flex flex-col items-start justify-between px-4 py-12 mt-12 mf:flex-row mf:p-20">
         <div className="flex flex-1 justify-start flex-col mf:mr-10 mf:mx-5">
           <h1 className="text-white text-gradient py-1 text-3xl sm:text-5xl">
             Send Crypto <br />
@@ -84,7 +84,7 @@ const Welcome = () => {
         </div>
 
         <div className="flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10  mf:mx-5">
-          <div className="flex-col justify-end items-start rounded-xl h-40 w-full sm:w-72 my-5 eth-card white-glassmorphism p-3">
+          <div className="flex-col justify-end items-start rounded-xl h-44 w-full sm:w-72 my-5 eth-card white-glassmorphism p-3">
             <div className="flex flex-col justify-between w-full h-full">
               <div className="flex justify-between items-center">
                 <div className=" flex justify-center items-center w-10 h-10 rounded-full border-2 border-white">
@@ -97,7 +97,8 @@ const Welcome = () => {
                   <p className="text-white font-light text-sm">0x000....000</p>
                 ) : (
                   <p className="text-white font-light text-sm">
-                    {currentAccount.substr(0, 30)}...
+                    {currentAccount.substr(0, 5)}...
+                    {currentAccount.substr(currentAccount.length - 4)}
                   </p>
                 )}
                 <p className="text-white font-semibold text-lg mt-1">
@@ -107,7 +108,7 @@ const Welcome = () => {
             </div>
           </div>
 
-          <div className=" flex flex-col justify-start items-center blue-glassmorphism p-5 w-full sm:w-96 ">
+          <div className=" flex flex-col justify-start items-center blue-glassmorphism p-5 w-full mt-8 sm:w-96 ">
             <Input
               placeholder="Receiver address"
               name="receiver"

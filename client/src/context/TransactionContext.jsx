@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { myContractAddress, myContractABI } from "../utils/constants";
-const ethers = require("ethers");
+import { myContractAddress, myContractABI } from "../utils/constants.js";
+import bigInt from "big-integer";
+import { ethers } from "ethers";
 
 const { ethereum } = window;
 
@@ -24,6 +25,7 @@ export const TransactionProvider = ({ children }) => {
   const [transactionCount, setTransactionCount] = useState(
     localStorage.getItem("transactionCount")
   );
+  const [transactions, setTransactions] = useState([]);
   const [currentAccount, setCurrentAccount] = useState("");
   const [formData, setFormData] = useState({
     receiver: "",
@@ -36,6 +38,44 @@ export const TransactionProvider = ({ children }) => {
     setFormData((prevState) => ({ ...prevState, [name]: e.target.value }));
   };
 
+  const checkIfTransactionsExist = async () => {
+    try {
+      const transactionContract = await getEthereumContract();
+      const transactionCount = await transactionContract.getTransactionsCount();
+
+      window.localStorage.setItem("transactionCount", transactionCount);
+    } catch (err) {
+      console.log(err);
+      throw new Error("No transactoins found!");
+    }
+  };
+
+  const fetchAllTransactions = async () => {
+    try {
+      if (!ethereum) return alert("Please Install Metamask!");
+
+      const transactionContract = await getEthereumContract();
+      const Fetchedtransactions =
+        await transactionContract.getAllTransactions();
+
+      const TransactionsBody = Fetchedtransactions.map((el) => {
+        return {
+          addressTo: el.receiver,
+          addressFrom: el.sender,
+          timestamp: new Date(
+            bigInt(Number(el.timestamp)) * 1000
+          ).toLocaleString(),
+          message: el.message,
+          keyword: el.keyword,
+          amount: bigInt(Number(el.amount)) / 10 ** 18,
+        };
+      });
+      setTransactions(TransactionsBody);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // Checking acc connected or not
   const ifWalletConnected = async () => {
     if (!ethereum) {
@@ -46,6 +86,7 @@ export const TransactionProvider = ({ children }) => {
 
     if (accounts.length) {
       setCurrentAccount(accounts[0]);
+      fetchAllTransactions();
     }
   };
 
@@ -117,6 +158,7 @@ export const TransactionProvider = ({ children }) => {
 
   useEffect(() => {
     ifWalletConnected();
+    checkIfTransactionsExist();
   }, []);
 
   return (
@@ -128,6 +170,8 @@ export const TransactionProvider = ({ children }) => {
         setFormData,
         handleChange,
         makeTransaction,
+        transactions,
+        loading,
       }}
     >
       {children}

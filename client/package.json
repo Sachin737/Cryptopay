@@ -2,17 +2,20 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@tailwindcss/forms": "^0.5.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "alchemy-sdk": "^2.9.1",
+    "big-integer": "^1.6.51",
     "ethers": "^6.6.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
     "react-scripts": "5.0.1",
+    "vite": "^4.3.9",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
